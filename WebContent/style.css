@@ -1,0 +1,89 @@
+@CHARSET "UTF-8";
+
+.main{
+	background: #cbecc6;
+	min-height: 700px;
+	min-width: 600px;
+	margin: 30px;
+	border: 8px solid #804040;
+	position: relative;
+}
+
+.main2{
+	background: #cbecc6;
+	min-height: 400px;
+	max-width: 700px;
+	margin: 100px;
+	border: 8px solid #804040;
+	color: white;
+	font:  bold 30px Lucida Handwriting, serif;
+}
+.bottom{
+	bottom: 50px;
+	font:  bold 20px Lucida Handwriting, serif;
+	color: white;
+	margin-left: 200px;
+}
+body {
+	background: #e0e0e0;
+}
+
+.podpis{
+	text-align: center;
+	font:  bold 20px Lucida Handwriting, serif;
+	height: 100px;
+	position: relative;
+	overflow: hidden;
+}
+.menu{
+	background: #cbecc6;
+	width: 300px;
+	height: 600px;
+	border-right: 5px dashed white;
+	border-top: 5px dashed white;
+	position: relative;
+	float: left;
+	text-align: center;
+}
+
+.menu ul{
+    list-style-type: none;
+    padding: 10px;
+}
+
+.menu li{
+    margin-right: 10px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.menu a {
+    display: block;
+        padding: 5px;
+        color: #ffffff;
+        background: #aaa;
+        text-decoration: none;
+        margin:3px;   
+}
+
+
+
+.menu a:hover{
+	background: green;
+}
+
+#content{
+	margin-left: 310px;
+	position: relative;
+	height: 605px;
+}
+
+#login_answer{
+	color: red;
+	position: relative;
+	height: 50px;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 0.5em;
+	font-family: Courier New;
+}
