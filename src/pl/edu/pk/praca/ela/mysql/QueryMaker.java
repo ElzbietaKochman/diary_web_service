@@ -150,7 +150,7 @@ System.out.println(wynik);
 		return wynik;
 	}
 	
-	//pobieranie nowych wiadomoœci opiekuna
+	//pobieranie nowych wiadomoï¿½ci opiekuna
 	
 	public List<Map<String, String>> getNoweWiadomosci(int id_odbiorcy){
 
@@ -763,6 +763,24 @@ System.out.println(wynik);
 
 		try {
 			res = connection.createStatement().executeQuery("select * from nauczyciel");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		try {
+
+			result = Utilities_servlet.createMap(res);
+		} catch (SQLException e) {
+		}
+
+
+		return result;
+	}
+	
+	public List<Map<String, String>> getWszyscyUczen(){
+
+		try {
+			res = connection.createStatement().executeQuery("select * from uczen order by nazwa");
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");

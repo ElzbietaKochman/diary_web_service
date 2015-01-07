@@ -88,3 +88,28 @@ body {
 	font-size: 0.5em;
 	font-family: Courier New;
 }
+
+.l_input{
+	margin-right: 10px;
+}
+
+.inputs input,select{
+	float:right;
+}
+
+.form_class{
+	width: 340px;
+}
+
+.form_class button{
+	margin-left:150px;
+}
+
+.inputs {
+	display: block;
+	padding-top: 10px;
+}
+
+.button{
+	margin-top: 60px;
+}

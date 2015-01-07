@@ -29,7 +29,6 @@ $(document).ready(function(){
   });
   $(".menu").find("a:last").css("margin-top","100px");
   
-  
   $("#add_user").click(function(){
 	  $("#content").load("add_user.jsp");
   });
