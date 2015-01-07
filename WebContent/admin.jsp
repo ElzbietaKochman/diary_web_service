@@ -17,6 +17,7 @@
 		<h3>Menu:</h3>
 		<ul>
 		<li><a id="add_user" href="#">Dodaj użytkownika</a></li>
+		<li><a id="assign_user" href="#">Dodaj ucznia do opiekuna</a></li>
 		<li><a id="add_year" href="#">Dodaj rok szkolny</a></li>
 		<li><a id="make_teacher" href="#">Mianuj wychowawcę</a></li>
 		<li><a id="manage_users" href="#">Zarządzaj użytkownikami</a></li>

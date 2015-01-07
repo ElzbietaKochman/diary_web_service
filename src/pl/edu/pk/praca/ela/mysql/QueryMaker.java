@@ -150,6 +150,35 @@ System.out.println(wynik);
 		return wynik;
 	}
 	
+	public int opiekunUczen(String id_opiekun, List<String> uczniowie){
+		wynik = 0;
+		try {
+			//data = data.replace("+", "-");
+			for(String id_uczen : uczniowie)
+				wynik += connection.createStatement().executeUpdate("INSERT INTO `diary_db`.`uczen_opiekun` VALUES (NULL, '"+id_uczen+"', '"+id_opiekun+"')");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie ustawOdebrane");
+		}
+		int res = 0;
+		if(wynik == uczniowie.size())
+			res = 1;
+		return res;
+	}
+	
+	public int dodajRokSzkolny(String rok_szk, String pocz_roku, String kon_zim, String kon_roku){
+		wynik = 0;
+		try {
+			//data = data.replace("+", "-");
+			wynik = connection.createStatement().executeUpdate("INSERT INTO `diary_db`.`rok_szkolny` VALUES (NULL, '"+rok_szk+"', '"+pocz_roku+"', '"+kon_zim+"', '"+kon_roku+"')");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie ustawOdebrane");
+		}
+		
+		return wynik;
+	}
+	
 	//pobieranie nowych wiadomo�ci opiekuna
 	
 	public List<Map<String, String>> getNoweWiadomosci(int id_odbiorcy){
@@ -249,6 +278,38 @@ System.out.println(wynik);
 		try {
 			wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`ocena_koncowa` SET `koncowa` = '"+wartosc+"' WHERE `ocena_koncowa`.`id_ocenyK` = "+id_ocenyK+"");
 			System.out.println(wynik);
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	
+	public int dodajUzytkownika(String typ, Map<String,String> data){
+		String zapytanie = "";
+		zapytanie += "INSERT INTO `diary_db`.`login_data` (`id_user`, `login`, `password`, `role`) VALUES (NULL, '"+data.get("login")+"', '"+data.get("password")+"', '"+typ+"')";
+		try {
+			wynik = connection.createStatement().executeUpdate(zapytanie);
+			
+			if(wynik > 0){
+				zapytanie = "INSERT INTO `diary_db`.`"+typ+"` VALUES(NULL,";
+				int login_id = getLoginDataId(data.get("login"));
+				if(typ.equals("uczen")){
+					zapytanie += login_id + "," + data.get("nr_grupy")+ ",'" + data.get("nazwa") + "'";
+				}
+				else if(typ.equals("nauczyciel")){
+					zapytanie += login_id +",'" + data.get("nazwa") + "','"+data.get("email")+"'," + data.get("tel");
+				}
+				else if(typ.equals("opiekun")){
+					zapytanie += login_id +",'" + data.get("nazwa") + "'," + data.get("tel");
+				}
+				else {
+					zapytanie += login_id +",'" + data.get("nazwa") + "'";
+				}
+				zapytanie += ")";
+				System.out.println(zapytanie);
+				wynik = connection.createStatement().executeUpdate(zapytanie);
+			}
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
 		}
@@ -762,7 +823,7 @@ System.out.println(wynik);
 	public List<Map<String, String>> getWszyscyNauczyciel(){
 
 		try {
-			res = connection.createStatement().executeQuery("select * from nauczyciel");
+			res = connection.createStatement().executeQuery("select * from nauczyciel order by nazwa");
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
@@ -777,10 +838,10 @@ System.out.println(wynik);
 		return result;
 	}
 	
-	public List<Map<String, String>> getWszyscyUczen(){
+	public List<Map<String, String>> getWszyscyNieprzypisaniUczen(){
 
 		try {
-			res = connection.createStatement().executeQuery("select * from uczen order by nazwa");
+			res = connection.createStatement().executeQuery("select * from uczen where id_ucznia not in (select id_ucznia from uczen_opiekun) order by nazwa");
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
@@ -798,7 +859,7 @@ System.out.println(wynik);
 	public List<Map<String, String>> getWszyscyOpiekun(){
 
 		try {
-			res = connection.createStatement().executeQuery("select * from opiekun");
+			res = connection.createStatement().executeQuery("select * from opiekun order by nazwa");
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
@@ -886,6 +947,27 @@ System.out.println(wynik);
 		return result;
 	}
 	
+	public int getLoginDataId(String user){
+
+		try {
+			res = connection.createStatement().executeQuery("select id_user from login_data where login='"+user+"'");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		int id = 0;
+		try {
+			res.beforeFirst();
+			while(res.next())
+				id = res.getInt("id_user");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return id;
+	}
+	
 
 	public List<Map<String, String>> getUsername(String user, String pass){
 
@@ -923,5 +1005,17 @@ System.out.println(wynik);
 
 
 		return result;
+	}
+	
+	public int przypiszNauczyciela(int id_nauczyciela, int id_grupy){
+
+		try {
+			wynik = connection.createStatement().executeUpdate("INSERT INTO `diary_db`.`wychowawca` VALUES (NULL, '"+id_nauczyciela+"', '"+id_grupy+"')");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
 	}
 }

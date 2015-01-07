@@ -1,8 +1,15 @@
 package pl.edu.pk.praca.ela;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import pl.edu.pk.praca.ela.mysql.QueryMaker;
 
 public class Utils {
+	
+	static QueryMaker query = QueryMaker.getInstance(DiaryDAO.DiaryDAO());
+	
 	public static String makeSelect(String label, String id, List<String[]> options){
 		String select = "<div class='inputs'><label class='l_input'>"+label+"</label><select id='"+id+"' name='"+id+"' required='required'>";
 		for(String[] elems : options){
@@ -61,5 +68,42 @@ public class Utils {
 		}
 		html += "</table></div>";
 		return html;
+	}
+	
+	public static List<String[]> uczenOptions(){
+		List<Map<String,String>> uczniowie = query.getWszyscyNieprzypisaniUczen();
+		List<String[]> options = new ArrayList<String[]>();
+		for(Map<String,String> uczen : uczniowie){
+			String[] dane = new String[2];
+			dane[0] = uczen.get("id_ucznia");
+			dane[1] = uczen.get("nazwa");
+			options.add(dane);
+		}
+		return options;
+		//html += Utils.makeMultipleSelect("Podopieczni", "podopieczni", options);
+	}
+	
+	public static List<String[]> opiekunOptions(){
+		List<Map<String,String>> uczniowie = query.getWszyscyOpiekun();
+		List<String[]> options = new ArrayList<String[]>();
+		for(Map<String,String> uczen : uczniowie){
+			String[] dane = new String[2];
+			dane[0] = uczen.get("id_opiekuna");
+			dane[1] = uczen.get("nazwa");
+			options.add(dane);
+		}
+		return options;
+	}
+	
+	public static List<String[]> nauczycielOptions(){
+		List<Map<String,String>> uczniowie = query.getWszyscyNauczyciel();
+		List<String[]> options = new ArrayList<String[]>();
+		for(Map<String,String> uczen : uczniowie){
+			String[] dane = new String[2];
+			dane[0] = uczen.get("id_nauczyciela");
+			dane[1] = uczen.get("nazwa");
+			options.add(dane);
+		}
+		return options;
 	}
 }
