@@ -76,6 +76,7 @@ body {
 	margin-left: 310px;
 	position: relative;
 	height: 605px;
+	padding-left: 30px;
 }
 
 #login_answer{

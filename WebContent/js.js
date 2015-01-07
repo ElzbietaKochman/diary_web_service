@@ -31,16 +31,16 @@ $(document).ready(function(){
   
   
   $("#add_user").click(function(){
-	  
+	  $("#content").load("add_user.jsp");
   });
   $("#add_year").click(function(){
-	  
+	  $("#content").load("add_year.jsp");
   });
   $("#make_teacher").click(function(){
-	  
+	  $("#content").load("make_teacher.jsp");
   });
   $("#manage_users").click(function(){
-	  
+	  $("#content").load("manage_users.jsp");
   });
   $("#logout").click(function(){
 	  $("#content").load("logout.jsp");
