@@ -28,9 +28,9 @@
 		
 		</div>
 	
-<% } else { out.println("<h1>Nie masz uprawnień by tu przebywać!</h1>"); }
+<% } else { out.println("<h1>Nie masz uprawnień by tu przebywać!</h1><a href='login.jsp'>Wyjdź</a>"); }
 	} catch(NullPointerException e){
-		out.println("<h1>Nie jesteś zalogowany!</h1>");
+		response.sendRedirect("login.jsp");
 	}%>
 	</div>
 </body>

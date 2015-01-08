@@ -142,6 +142,16 @@ public class Admin extends HttpServlet {
 			int success = query.przypiszNauczyciela(teacher_id, id_grupy);
 			out.println(success);
 			break;
+		case "is_logged":
+			boolean logged = true;
+			try{
+				request.getSession().getAttribute("user").equals("admin");
+			}
+			catch(NullPointerException e){
+				logged = false;
+			}
+			out.println(logged);
+			break;
 		}
 	}
 

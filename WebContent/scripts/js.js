@@ -28,7 +28,9 @@ $(document).ready(function(){
 	  });
   });
   $(".menu").find("a:last").css("margin-top","100px");
-  
+  $(".menu").find("a").click(function(){
+	  isUserLoggedIn();
+  });
   $("#add_user").click(function(){
 	  $("#content").load("add_user.jsp");
   });
@@ -164,4 +166,20 @@ function make_teacher(){
 			  }
 		  }
 	  });
+}
+
+function isUserLoggedIn(){
+	$.ajax({
+		  url: "Admin",
+		  type: "post",
+		  data: {
+			  action: "is_logged"
+		  },
+		  success: function(data){
+			  if(data.length == 7){
+				  window.location.reload();
+			  }
+		  }
+	});
+		  
 }
