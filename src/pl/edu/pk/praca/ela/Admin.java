@@ -174,7 +174,7 @@ public class Admin extends HttpServlet {
 		case "edit_user":
 			String edit_user = request.getParameter("user");
 			String role = query.getRole(edit_user);
-			String form_next = "";
+			String form_next = Utils.makeInputHidden("role", role);
 			switch(role){
 			case "uczen":
 				Map<String, String> uczen = query.getUczen(Integer.parseInt(edit_user)).get(0);
@@ -192,15 +192,87 @@ public class Admin extends HttpServlet {
 				Map<String, String> admin = query.getAdmin(Integer.parseInt(edit_user)).get(0);
 				form_next += Utils.createInputsToEdit(admin);
 				break;
+			case "wychowawca":
+				Map<String, String> wychowawca = query.getNauczyciel(Integer.parseInt(edit_user)).get(0);
+				form_next += Utils.createInputsToEdit(wychowawca);
+				break;
 				default:
 					form_next = "<h1>Bledna rola</h1>";
 					break;
 			}
+			form_next += Utils.makeButton("Potwierdz", "confirm_edit_user()", "button");
 			out.println(form_next);
 			
 			break;
 		case "delete_user":
 			String delete_user = request.getParameter("user");
+			String role_del = query.getRole(delete_user);
+			String htm_del = "<p>Usuwasz uzytkownika o id "+delete_user+"</p>";
+			htm_del += "<p>Ma on prawa: <b>"+role_del+"</b></p>";
+			htm_del += "<p>Potwierdzasz?</p>";
+			htm_del += Utils.makeButton("Tak", "confirm_delete_user()", "button");
+			out.println(htm_del);
+			break;
+		case "confirm_delete_user":
+			Integer del_user = Integer.parseInt(request.getParameter("user"));
+			String role_dele = query.getRole(del_user.toString());
+			int wynik = 0;
+			if(role_dele.equals("opiekun")){
+				wynik = query.deleteOpiekun(del_user);
+			}
+			else if(role_dele.equals("wychowawca")){
+				wynik = query.deleteWychowawca(del_user);
+			}
+			else if(role_dele.equals("admin")){
+				wynik = query.deleteAdmin(del_user);
+			}
+			else if(role_dele.equals("nauczyciel")){
+				wynik = query.deleteNauczyciel(del_user);
+			}
+			else if(role_dele.equals("uczen")){
+				wynik = query.deleteUczen(del_user);
+			}
+			else {
+				wynik = 2;
+			}
+			out.println(wynik);
+			break;
+		case "confirm_edit_user":
+			String[] edit_user_data = request.getParameterValues("values[]");
+			String edited_user_id = edit_user_data[1];
+			String edited_role = edit_user_data[2];
+			wynik=0;
+			Map<String,String> params = new HashMap<String, String>();
+			switch(edited_role){
+			case "uczen":
+				params.put("id_grupy",edit_user_data[3]);
+				params.put("nazwa", edit_user_data[4]);
+				
+				break;
+			case "nauczyciel":
+				params.put("telefon", edit_user_data[3]);
+				params.put("nazwa", edit_user_data[4]);
+				params.put("email", edit_user_data[5]);
+				break;
+			case "wychowawca":
+				params.put("telefon", edit_user_data[3]);
+				params.put("nazwa", edit_user_data[4]);
+				params.put("email", edit_user_data[5]);
+				break;
+			case "admin":
+				params.put("nazwa", edit_user_data[3]);
+				break;
+			case "opiekun":
+				params.put("nazwa", edit_user_data[3]);
+				params.put("telefon", edit_user_data[4]);
+				break;
+				default:
+					wynik = 2;
+					break;
+			}
+			if(wynik != 2)
+				wynik = query.edytujUzytkownika(Integer.parseInt(edited_user_id), edited_role, params);
+			out.println(wynik);
 			break;
 		}
 	}

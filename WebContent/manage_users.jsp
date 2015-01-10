@@ -23,6 +23,7 @@ $(document).ready(function(){
 			  },
 			  success: function(data){
 				  $("#next_form_fields").html(data);
+				  $("#form_options").html("");
 			  }
 		  });
 	});

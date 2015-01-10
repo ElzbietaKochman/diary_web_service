@@ -493,9 +493,9 @@ System.out.println(wynik);
 	
 	
 	public List<Map<String, String>> getUczen(int id_ucznia){
-
+		System.out.println(id_ucznia);
 		try {
-			res = connection.createStatement().executeQuery("select * from uczen where id_ucznia = "+id_ucznia);
+			res = connection.createStatement().executeQuery("select * from uczen where id_user = "+id_ucznia);
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
@@ -1022,6 +1022,27 @@ System.out.println(wynik);
 		return id;
 	}
 	
+	public int getLoginDataIdFromNauczyciel(int id_nauczyciel){
+
+		try {
+			res = connection.createStatement().executeQuery("select id_user from nauczyciel where id_nauczyciela="+id_nauczyciel);
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		int id = 0;
+		try {
+			res.beforeFirst();
+			while(res.next())
+				id = res.getInt("id_user");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return id;
+	}
+	
 	public String getRole(String user){
 
 		try {
@@ -1088,6 +1109,8 @@ System.out.println(wynik);
 
 		try {
 			wynik = connection.createStatement().executeUpdate("INSERT INTO `diary_db`.`wychowawca` VALUES (NULL, '"+id_nauczyciela+"', '"+id_grupy+"')");
+			int id = getLoginDataIdFromNauczyciel(id_nauczyciela);
+			wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`login_data` SET `role` = 'wychowawca' WHERE `login_data`.`id_user` = "+id);
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
@@ -1095,4 +1118,114 @@ System.out.println(wynik);
 		
 		return wynik;
 	}
+	
+	public int edytujUzytkownika(int id_user, String typ, Map<String, String> params){
+		wynik = 0;
+		try {
+			switch(typ){
+			case "uczen":
+				wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`uczen` SET `id_grupy` = "+params.get("id_grupy")+", `nazwa` = '"+params.get("nazwa")+"' WHERE `id_user` = "+id_user);
+				break;
+			case "nauczyciel":
+				wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`nauczyciel` SET `nazwa` = '"+params.get("nazwa")+"', `email` = '"+params.get("email")+"', `telefon` = '"+params.get("telefon")+"' WHERE `id_user` = "+id_user);
+				break;
+			case "opiekun":
+				wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`opiekun` SET `nazwa` = '"+params.get("nazwa")+"', `telefon` = '"+params.get("telefon")+"' WHERE `id_user` = "+id_user);
+				break;
+			case "wychowawca":
+				wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`nauczyciel` SET `nazwa` = '"+params.get("nazwa")+"', `email` = '"+params.get("email")+"', `telefon` = '"+params.get("telefon")+"' WHERE `id_user` = "+id_user);
+				break;
+			case "admin":
+				wynik = connection.createStatement().executeUpdate("UPDATE `diary_db`.`admin` SET `nazwa` = '"+params.get("nazwa")+"' WHERE `id_user` = "+id_user);
+				break;
+			}
+			
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	
+	public int deleteOpiekun(int id_user){
+		String id_opiekuna = getOpiekun(id_user).get(0).get("id_opiekuna");
+		try {
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `uczen_opiekun` WHERE id_opiekuna="+id_opiekuna);
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `opiekun` WHERE id_opiekuna="+id_opiekuna);
+			System.out.println(wynik);
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	
+	public int deleteWychowawca(int id_user){
+		String id_wychowawcy = getWychowawca(id_user).get(0).get("id_wychowawcy");
+		
+		String id_nauczyciela = getNauczyciel(id_user).get(0).get("id_nauczyciela");
+		try {
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `wychowawca` WHERE id_wychowawcy="+id_wychowawcy);
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `nauczyciel` WHERE id_nauczyciela="+id_nauczyciela);
+			System.out.println(wynik);
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	
+	public int deleteUczen(int id_user){
+		String id_ucznia = getUczen(id_user).get(0).get("id_ucznia");
+		try {
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `uczen` WHERE id_ucznia="+id_ucznia);
+			System.out.println(wynik);
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	
+	public int deleteNauczyciel(int id_user){
+		String id_nauczyciela = getNauczyciel(id_user).get(0).get("id_nauczyciela");
+		try {
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `nauczyciel` WHERE id_nauczyciela="+id_nauczyciela);
+			System.out.println(wynik);
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	
+	public int deleteAdmin(int id_user){
+		String id_admin = getAdmin(id_user).get(0).get("id_admin");
+		try {
+			wynik = connection.createStatement().executeUpdate("DELETE FROM `admin` WHERE id_admin="+id_admin);
+			System.out.println(wynik);
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		
+		return wynik;
+	}
+	//select * from wychowawca where id_nauczyciela= ( select id_nauczyciela from nauczyciel where id_user=
+			
+	public List<Map<String, String>> getWychowawca(int id_user){
+		try {
+			res = connection.createStatement().executeQuery("select * from wychowawca where id_nauczyciela= ( select id_nauczyciela from nauczyciel where id_user="+id_user+")");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		try {
+
+			result = Utilities_servlet.createMap(res);
+		} catch (SQLException e) {
+		}
+		return result;
+	}
+	
 }

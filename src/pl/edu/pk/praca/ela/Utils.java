@@ -128,8 +128,10 @@ public class Utils {
 		String html = "";
 		
 		for(Entry<String, String> entry : fields.entrySet()){
-			if(!entry.getKey().equals("id_user") && !entry.getKey().equals("id_nauczyciela") && !entry.getKey().equals("id_opiekuna") && !entry.getKey().equals("id_ucznia") && !entry.getKey().equals("id_admina"))
-				html += makeInputText(entry.getKey(), entry.getKey(), entry.getValue());
+			if(!entry.getKey().equals("id_user") && !entry.getKey().equals("id_nauczyciela") && !entry.getKey().equals("id_opiekuna") && !entry.getKey().equals("id_ucznia") && !entry.getKey().equals("id_admin")){
+				String label = entry.getKey().substring(0, 1).toUpperCase()+entry.getKey().substring(1);
+				html += makeInputText(entry.getKey(), label, entry.getValue());
+			}
 		}
 		
 		return html;

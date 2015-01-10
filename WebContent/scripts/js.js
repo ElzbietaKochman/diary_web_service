@@ -213,3 +213,55 @@ function delete_user(){
 		  }
 	});
 }
+
+function confirm_edit_user(){
+	var form_values = $("#manage_users_form").serializeArray();
+	var values = new Array();
+	
+
+	$.each(form_values, function(index,element){
+		values.push(element.value);
+	});
+	 $.ajax({
+		  url: "Admin",
+		  type: "post",
+		  data: {
+			  action: "confirm_edit_user",
+			  values: values
+		  },
+		  success: function(data){
+			  if(data == 1){
+				  $("#manage_users_answer").html("<font color='green'>Pomyślnie edytowano użytkownika<font>");
+			  }
+			  else if(data == 0){
+				  $("#manage_users_answer").html("<font color='red'>Błąd z bazą danych</font>");
+			  }
+			  else if(data == 2){
+				  $("#manage_users_answer").html("<font color='red'>Zły typ użytkowika</font>");
+			  }
+		  }
+	  });
+}
+
+function confirm_delete_user(){
+	var user = $("#managed_user").val();
+	$.ajax({
+		  url: "Admin",
+		  type: "post",
+		  data: {
+			  action: "confirm_delete_user",
+			  user: user
+		  },
+		  success: function(data){
+			  if(data == 1){
+				  $("#manage_users_answer").html("<font color='green'>Usunieto uzytkownika<font>");
+			  }
+			  else if(data == 0){
+				  $("#manage_users_answer").html("<font color='red'>Brak uzytkownika w bazie</font>");
+			  }
+			  else {
+				  $("#manage_users_answer").html("<font color='red'>Zły typ użytkownika</font>");
+			  }
+		  }
+	});
+}
