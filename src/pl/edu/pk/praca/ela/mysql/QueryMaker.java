@@ -838,6 +838,24 @@ System.out.println(wynik);
 		return result;
 	}
 	
+	public List<Map<String, String>> getWszyscyUzytkownik(){
+
+		try {
+			res = connection.createStatement().executeQuery("(select id_user, nazwa,role from nauczyciel natural join login_data) union (select id_user, nazwa,role from opiekun  natural join login_data) union (select id_user, nazwa,role from uczen natural join login_data) union (select id_user, nazwa,role from admin natural join login_data) order by role,nazwa");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		try {
+
+			result = Utilities_servlet.createMap(res);
+		} catch (SQLException e) {
+		}
+
+
+		return result;
+	}
+	
 	public List<Map<String, String>> getWszyscyNieprzypisaniUczen(){
 
 		try {
@@ -877,7 +895,43 @@ System.out.println(wynik);
 	public List<Map<String, String>> getNauczyciel(int id_nauczyciela){
 
 		try {
-			res = connection.createStatement().executeQuery("select * from nauczyciel where id_nauczyciela="+id_nauczyciela);
+			res = connection.createStatement().executeQuery("select * from nauczyciel where id_user="+id_nauczyciela);
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		try {
+
+			result = Utilities_servlet.createMap(res);
+		} catch (SQLException e) {
+		}
+
+
+		return result;
+	}
+	
+	public List<Map<String, String>> getOpiekun(int id_opiekuna){
+
+		try {
+			res = connection.createStatement().executeQuery("select * from opiekun where id_user="+id_opiekuna);
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		try {
+
+			result = Utilities_servlet.createMap(res);
+		} catch (SQLException e) {
+		}
+
+
+		return result;
+	}
+	
+	public List<Map<String, String>> getAdmin(int id_admina){
+
+		try {
+			res = connection.createStatement().executeQuery("select * from admin where id_user="+id_admina);
 
 		} catch (SQLException e) {
 			System.err.println("Zle zapytanie");
@@ -967,6 +1021,29 @@ System.out.println(wynik);
 
 		return id;
 	}
+	
+	public String getRole(String user){
+
+		try {
+			res = connection.createStatement().executeQuery("select role from login_data where id_user="+user+"");
+
+		} catch (SQLException e) {
+			System.err.println("Zle zapytanie");
+		}
+		String role = "";
+		try {
+			res.beforeFirst();
+			while(res.next())
+				role = res.getString("role");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		return role;
+	}
+	
+	
 	
 
 	public List<Map<String, String>> getUsername(String user, String pass){

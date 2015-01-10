@@ -3,6 +3,7 @@ package pl.edu.pk.praca.ela;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import pl.edu.pk.praca.ela.mysql.QueryMaker;
 
@@ -29,6 +30,10 @@ public class Utils {
 	}
 	public static String makeInputText(String id, String label, String value){
 		return "<div class='inputs'><label class='l_input'>"+label+"</label><input type='text' id='"+id+"' name='"+id+"' value='"+value+"' size='30'  required='required'></input></div>";
+	}
+	
+	public static String makeInputHidden(String id, String value){
+		return "<input type='hidden' id='"+id+"' name='"+id+"' value='"+value+"'></input>";
 	}
 
 	public static String makeInputTextReadOnly(String id, String label, String value){
@@ -105,5 +110,28 @@ public class Utils {
 			options.add(dane);
 		}
 		return options;
+	}
+	
+	public static List<String[]> uzytkownikOptions(){
+		List<Map<String,String>> uczniowie = query.getWszyscyUzytkownik();
+		List<String[]> options = new ArrayList<String[]>();
+		for(Map<String,String> uczen : uczniowie){
+			String[] dane = new String[2];
+			dane[0] = uczen.get("id_user");
+			dane[1] = uczen.get("nazwa");
+			options.add(dane);
+		}
+		return options;
+	}
+	
+	public static String createInputsToEdit(Map<String,String> fields){
+		String html = "";
+		
+		for(Entry<String, String> entry : fields.entrySet()){
+			if(!entry.getKey().equals("id_user") && !entry.getKey().equals("id_nauczyciela") && !entry.getKey().equals("id_opiekuna") && !entry.getKey().equals("id_ucznia") && !entry.getKey().equals("id_admina"))
+				html += makeInputText(entry.getKey(), entry.getKey(), entry.getValue());
+		}
+		
+		return html;
 	}
 }

@@ -42,6 +42,7 @@ public class Admin extends HttpServlet {
 		QueryMaker query = QueryMaker.getInstance(conn);
 		PrintWriter out = response.getWriter();
 		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
 		String action = request.getParameter("action");
 		switch(action){
 		case "add_user_form":
@@ -151,6 +152,55 @@ public class Admin extends HttpServlet {
 				logged = false;
 			}
 			out.println(logged);
+			break;
+		case "manage_users_type":
+			String type = request.getParameter("type");
+			String htm ="";
+			List<String[]> optons = Utils.uzytkownikOptions();
+			htm += Utils.makeSelect("Uzytkowik", "managed_user", optons);
+			switch(type){
+			case "edit":
+				htm += Utils.makeButton("Edytuj", "edit_user()", "button");
+				break;
+			case "delete":
+				htm += Utils.makeButton("Usun", "delete_user()", "button");
+				break;
+			default:
+				htm = "<h1>Nieprawidlowe pole typu</h1>";
+				break;
+			}
+			out.println(htm);
+			break;
+		case "edit_user":
+			String edit_user = request.getParameter("user");
+			String role = query.getRole(edit_user);
+			String form_next = "";
+			switch(role){
+			case "uczen":
+				Map<String, String> uczen = query.getUczen(Integer.parseInt(edit_user)).get(0);
+				form_next += Utils.createInputsToEdit(uczen);
+				break;
+			case "nauczyciel":
+				Map<String, String> nauczyciel = query.getNauczyciel(Integer.parseInt(edit_user)).get(0);
+				form_next += Utils.createInputsToEdit(nauczyciel);
+				break;
+			case "opiekun":
+				Map<String, String> opiekun = query.getOpiekun(Integer.parseInt(edit_user)).get(0);
+				form_next += Utils.createInputsToEdit(opiekun);
+				break;
+			case "admin":
+				Map<String, String> admin = query.getAdmin(Integer.parseInt(edit_user)).get(0);
+				form_next += Utils.createInputsToEdit(admin);
+				break;
+				default:
+					form_next = "<h1>Bledna rola</h1>";
+					break;
+			}
+			out.println(form_next);
+			
+			break;
+		case "delete_user":
+			String delete_user = request.getParameter("user");
 			break;
 		}
 	}

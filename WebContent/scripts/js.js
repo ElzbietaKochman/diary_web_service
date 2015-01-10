@@ -183,3 +183,33 @@ function isUserLoggedIn(){
 	});
 		  
 }
+
+function edit_user(){
+	var user = $("#managed_user").val();
+	$.ajax({
+		  url: "Admin",
+		  type: "post",
+		  data: {
+			  action: "edit_user",
+			  user: user
+		  },
+		  success: function(data){
+			  $("#form_options").html(data);
+		  }
+	});
+}
+
+function delete_user(){
+	var user = $("#managed_user").val();
+	$.ajax({
+		  url: "Admin",
+		  type: "post",
+		  data: {
+			  action: "delete_user",
+			  user: user
+		  },
+		  success: function(data){
+			  $("#form_options").html(data);
+		  }
+	});
+}
